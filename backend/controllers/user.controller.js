@@ -37,4 +37,56 @@ const signUp = async (req, res) => {
   res.status(200).json({ message: "User created Successfully", token: token });
 };
 
-module.exports = signUp;
+const updateSchema = zod.object({
+  username: zod.string().optional(),
+  firstName: zod.string().optional(),
+  lastName: zod.string().optional(),
+});
+const updateUser = async (req, res) => {
+  const { success } = updateSchema.safeParse(req.body);
+  if (!success) {
+    res.status(411).json({ message: "Please send valid inputs" });
+  }
+  await User.updateOne(
+    { _id: req.userId },
+    {
+      $set: req.body,
+    }
+  );
+  res.status(200).json({ message: "User Details Update Successfully" });
+};
+
+const filterLogic = async (req, res) => {
+  const filter = req.query.filter || "";
+  const users = await User.find({
+    $or: [
+      {
+        firstName: {
+          $regex: filter,
+          $options: "i",
+        },
+      },
+      {
+        lastName: {
+          $regex: filter,
+          $options: "i",
+        },
+      },
+    ],
+  });
+  res.status(200).json({
+    user: users.map((user) => {
+      return {
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        _id: user._id,
+      };
+    }),
+  });
+};
+module.exports = {
+  signUp,
+  updateUser,
+  filterLogic,
+};

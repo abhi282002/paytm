@@ -43,6 +43,32 @@ const signUp = async (req, res) => {
 
   res.status(200).json({ message: "User created Successfully", token: token });
 };
+const signInSchema = zod.object({
+  username: zod.string().email(),
+  password: zod.string(),
+});
+const signIn = async (req, res) => {
+  const { username, password } = req.body;
+  const { success } = zod.safeParse(req.body);
+  if (!success) {
+    return res.status(403).json({ message: "Invalid Inputs" });
+  }
+  const user = await User.findOne({ username: username, password: password });
+  if (user) {
+    const token = jwt.sign(
+      {
+        userId: user._id,
+      },
+      JWT_SECRET
+    );
+
+    res.json({
+      token: token,
+    });
+    return;
+  }
+  res.status(500).json({ message: "Error while logging Please try again" });
+};
 
 const updateSchema = zod.object({
   username: zod.string().optional(),
@@ -96,4 +122,5 @@ module.exports = {
   signUp,
   updateUser,
   filterLogic,
+  signIn,
 };

@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
-const { string } = require("zod");
 
 const accountSchema = mongoose.Schema({
   userId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
@@ -14,3 +13,5 @@ const accountSchema = mongoose.Schema({
 });
 
 const Account = mongoose.model("Account", accountSchema);
+
+module.exports = Account;

@@ -2,6 +2,7 @@ const User = require("../model/user.model");
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
 const JWT_token = require("../config");
+const Account = require("../model/account.model");
 const singupSchema = zod.object({
   username: zod.string().email(),
   lastName: zod.string(),
@@ -27,6 +28,12 @@ const signUp = async (req, res) => {
     lastName,
     password,
   });
+
+  await Account.create({
+    userId: dbUser?._id,
+    balance: 1 + Math.random() * 10000,
+  });
+
   const token = jwt.sign(
     {
       userId: dbUser._id,

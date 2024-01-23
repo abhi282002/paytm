@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const connectToDatabase = require("./db"); // Adjust the path as needed
 const mainRouter = require("./routes/user.routes");
+const accountRouter = require("./routes/account.routes.js");
 const cors = require("cors");
 const app = express();
 
@@ -9,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/v1/user", mainRouter);
+app.use("/api/v1/account", accountRouter);
 connectToDatabase()
   .then(() => {
     app.listen(8000, () => {

@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const UserSchema = mongoose.Schema({
   firstName: {
-    type: String, // Corrected data type
+    type: String,
     required: true,
   },
   lastName: {
-    type: String, // Corrected data type
+    type: String,
     required: true,
   },
   password: {
-    type: String, // Corrected data type
+    type: String,
     required: true,
     minLength: [8, "password should be a minimum of 8 characters"],
   },
